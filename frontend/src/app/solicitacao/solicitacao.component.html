@@ -1,0 +1,133 @@
+<div class="card">
+  <div class="card-header">
+    <h2>Nova Solicitação de Consultoria</h2>
+  </div>
+
+  <div class="card-body">
+    <form [formGroup]="solicitacaoForm" (ngSubmit)="enviarSolicitacao()">
+      <!-- Seção: Identificação e Busca de Dados do Paciente -->
+      <section class="form-section">
+        <h3>Identificação do Paciente</h3>
+        
+        <div class="form-row search-row">
+          <div class="form-group flex-2">
+            <label for="prontuario">Prontuário</label>
+            <div class="search-input">
+              <input type="text" id="prontuario" formControlName="prontuario" placeholder="Ex: 123456" />
+            </div>
+          </div>
+          
+          <div class="form-group flex-4">
+            <label for="nomePaciente">Nome do Paciente</label>
+            <div class="search-input">
+              <input type="text" id="nomePaciente" formControlName="nomePaciente" placeholder="Nome Completo" />
+              <button type="button" class="btn btn-secondary btn-search" (click)="buscarPaciente()" [disabled]="isSearching">
+                {{ isSearching ? 'Buscando...' : 'Buscar (AGHU)' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="cartaoSus">Cartão SUS</label>
+            <input type="text" id="cartaoSus" formControlName="cartaoSus" />
+          </div>
+          
+          <div class="form-group flex-2">
+            <label for="cpf">CPF</label>
+            <input type="text" id="cpf" formControlName="cpf" />
+          </div>
+          
+          <div class="form-group flex-2">
+            <label for="leito">Leito</label>
+            <input type="text" id="leito" formControlName="leito" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="numeroConsulta">Nº da Consulta (Ambulatorial)</label>
+            <input type="text" id="numeroConsulta" formControlName="numeroConsulta" />
+          </div>
+          
+          <div class="form-group flex-4">
+            <label for="clinicaOrigem">Clínica de Origem</label>
+            <input type="text" id="clinicaOrigem" formControlName="clinicaOrigem" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção: Informações da Consultoria e Clínicas -->
+      <section class="form-section">
+        <h3>Dados da Consultoria</h3>
+
+        <div class="form-row">
+          <div class="form-group flex-3">
+            <label for="clinicaDestino">Clínica Destino <span class="required">*</span></label>
+            <select id="clinicaDestino" formControlName="clinicaDestino" [class.is-invalid]="solicitacaoForm.get('clinicaDestino')?.invalid && solicitacaoForm.get('clinicaDestino')?.touched">
+              <option value="" disabled>Selecione a clínica</option>
+              <option *ngFor="let clinica of clinicas" [value]="clinica">{{ clinica }}</option>
+            </select>
+            <span class="error-msg" *ngIf="solicitacaoForm.get('clinicaDestino')?.invalid && solicitacaoForm.get('clinicaDestino')?.touched">Selecione uma clínica destino.</span>
+          </div>
+          
+          <div class="form-group flex-2">
+            <label for="data">Data</label>
+            <input type="text" id="data" formControlName="data" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-4">
+            <label for="nomeMedico">Nome do Médico Solicitante <span class="required">*</span></label>
+            <input type="text" id="nomeMedico" formControlName="nomeMedico" placeholder="Dr(a). Nome Sobrenome" [class.is-invalid]="solicitacaoForm.get('nomeMedico')?.invalid && solicitacaoForm.get('nomeMedico')?.touched" />
+            <span class="error-msg" *ngIf="solicitacaoForm.get('nomeMedico')?.invalid && solicitacaoForm.get('nomeMedico')?.touched">O nome do médico é obrigatório.</span>
+          </div>
+          
+          <div class="form-group flex-2">
+            <label for="crm">CRM <span class="required">*</span></label>
+            <input type="text" id="crm" formControlName="crm" placeholder="UF-XXXX" [class.is-invalid]="solicitacaoForm.get('crm')?.invalid && solicitacaoForm.get('crm')?.touched" />
+            <span class="error-msg" *ngIf="solicitacaoForm.get('crm')?.invalid && solicitacaoForm.get('crm')?.touched">O CRM é obrigatório.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-full">
+            <label for="descricao">Descrição da Situação Clínica e Pedido <span class="required">*</span></label>
+            <textarea id="descricao" formControlName="descricao" rows="5" placeholder="Descreva o quadro clínico do paciente e o motivo da solicitação de parecer..." [class.is-invalid]="solicitacaoForm.get('descricao')?.invalid && solicitacaoForm.get('descricao')?.touched"></textarea>
+            <span class="error-msg" *ngIf="solicitacaoForm.get('descricao')?.invalid && solicitacaoForm.get('descricao')?.touched">A descrição clínica é obrigatória.</span>
+            
+            <div class="ia-assist-box">
+              <div class="ia-header">
+                <span class="ia-icon">✨</span>
+                <p>Assistente de IA</p>
+                <button type="button" class="btn btn-sm btn-outline-ia" (click)="gerarSugestaoIA()" [disabled]="iaLoading">
+                  {{ iaLoading ? 'Gerando...' : 'Pedir Sugestão' }}
+                </button>
+              </div>
+              <div class="ia-suggestion" *ngIf="iaSuggestion">
+                <p>{{ iaSuggestion }}</p>
+                <div class="ia-actions">
+                  <button type="button" class="btn btn-sm btn-success" (click)="aceitarSugestaoIA()">Aceitar</button>
+                  <button type="button" class="btn btn-sm btn-danger" (click)="rejeitarSugestaoIA()">Rejeitar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção: Ações de Submissão e Impressão -->
+      <div class="form-actions no-print">
+        <button type="button" class="btn btn-outline" (click)="imprimirSolicitacao()">
+          🖨️ Imprimir
+        </button>
+        <div class="right-actions">
+          <button type="button" class="btn btn-secondary" (click)="limparFormulario()">Limpar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="solicitacaoForm.invalid">Enviar Solicitação</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
