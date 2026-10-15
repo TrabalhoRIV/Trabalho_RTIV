@@ -1,3 +1,6 @@
+/* ═══════════════════════════════════════════════════════════════
+   Card base
+   ═══════════════════════════════════════════════════════════════ */
 .card {
   background: var(--surface-color);
   border-radius: 8px;
@@ -22,6 +25,9 @@
   padding: 2rem;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Seções e grid
+   ═══════════════════════════════════════════════════════════════ */
 .form-section {
   margin-bottom: 2.5rem;
 }
@@ -48,21 +54,31 @@
   gap: 0.5rem;
 }
 
-.flex-2 { flex: 2; min-width: 200px; }
-.flex-3 { flex: 3; min-width: 250px; }
-.flex-4 { flex: 4; min-width: 300px; }
+.flex-2   { flex: 2; min-width: 200px; }
+.flex-3   { flex: 3; min-width: 250px; }
+.flex-4   { flex: 4; min-width: 300px; }
 .flex-full { flex: 100%; }
 
+/* ═══════════════════════════════════════════════════════════════
+   Labels
+   ═══════════════════════════════════════════════════════════════ */
 label {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .required {
   color: var(--error-color);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Inputs, selects, textareas
+   ═══════════════════════════════════════════════════════════════ */
 input, select, textarea {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border-color);
@@ -71,6 +87,7 @@ input, select, textarea {
   transition: all 0.2s ease;
   background: var(--surface-color);
   color: var(--text-primary);
+  width: 100%;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -86,19 +103,111 @@ input:disabled, select:disabled, textarea:disabled {
   border-color: #e0e0e0;
 }
 
+/* Campo readonly preenchido pelo login — destaque visual sutil */
+.readonly-login {
+  background-color: #f0f4ff !important;
+  border-color: #b8c8f8 !important;
+  color: var(--text-primary) !important;
+  cursor: default !important;
+}
+
 .is-invalid {
-  border-color: var(--error-color);
+  border-color: var(--error-color) !important;
 }
 
-.search-input {
+.error-msg {
+  color: var(--error-color);
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Prontuário — busca automática (sem botão)
+   ═══════════════════════════════════════════════════════════════ */
+.prontuario-input-wrapper {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.search-input input {
-  flex: 1;
+.search-status {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
+.search-status.success {
+  color: var(--success-color);
+  font-weight: 500;
+}
+
+/* Spinner animado */
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Alerta de fallback manual (paciente não encontrado no AGHU)
+   ═══════════════════════════════════════════════════════════════ */
+.alert-manual {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-left: 4px solid #f59e0b;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.alert-manual .alert-icon {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.alert-manual strong {
+  display: block;
+  color: #92400e;
+  margin-bottom: 0.2rem;
+}
+
+.alert-manual p {
+  color: #78350f;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Badge "Credencial do login"
+   ═══════════════════════════════════════════════════════════════ */
+.badge-auto {
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: #e8f0fe;
+  color: #1a56db;
+  border: 1px solid #b8c8f8;
+  border-radius: 20px;
+  padding: 0.15rem 0.5rem;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Botões
+   ═══════════════════════════════════════════════════════════════ */
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
@@ -147,60 +256,6 @@ input:disabled, select:disabled, textarea:disabled {
   background-color: rgba(15, 98, 254, 0.05);
 }
 
-.form-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-color);
-}
-
-.right-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.ia-assist-box {
-  margin-top: 0.75rem;
-  background-color: #f6f2ff;
-  border: 1px solid #d4bbff;
-  border-left: 4px solid #8a3ffc;
-  padding: 1rem;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.ia-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.ia-header p {
-  font-weight: 600;
-  color: #4b23a3;
-  margin: 0;
-  flex: 1;
-}
-
-.ia-suggestion {
-  background: white;
-  padding: 1rem;
-  border-radius: 4px;
-  border: 1px dashed #d4bbff;
-  color: #161616;
-  font-size: 0.875rem;
-}
-
-.ia-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
 .btn-sm {
   padding: 0.4rem 0.75rem;
   font-size: 0.8rem;
@@ -226,9 +281,72 @@ input:disabled, select:disabled, textarea:disabled {
   color: white;
 }
 
-.error-msg {
-  color: var(--error-color);
-  font-size: 0.75rem;
-  margin-top: -0.25rem;
-  display: block;
+/* ═══════════════════════════════════════════════════════════════
+   Assistente de IA (HU03)
+   ═══════════════════════════════════════════════════════════════ */
+.ia-assist-box {
+  margin-top: 0.75rem;
+  background-color: #f6f2ff;
+  border: 1px solid #d4bbff;
+  border-left: 4px solid #8a3ffc;
+  padding: 1rem;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ia-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ia-header p {
+  font-weight: 600;
+  color: #4b23a3;
+  margin: 0;
+  flex: 1;
+}
+
+.ia-disclaimer {
+  font-size: 0.72rem;
+  color: #6b46c1;
+  font-style: italic;
+  background: rgba(138, 63, 252, 0.08);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.ia-suggestion {
+  background: white;
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px dashed #d4bbff;
+  color: #161616;
+  font-size: 0.875rem;
+}
+
+.ia-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Ações do formulário
+   ═══════════════════════════════════════════════════════════════ */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.right-actions {
+  display: flex;
+  gap: 1rem;
 }
