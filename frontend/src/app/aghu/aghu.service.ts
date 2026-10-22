@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
@@ -13,29 +14,13 @@ export interface DadosPaciente {
   clinicaOrigem: string;
 }
 
-/**
- * AghuService — integração com a API do AGHU.
- *
- * Endpoint real documentado:
- *   GET /api/pacientes/{prontuario}
- *   Resposta: { cpf, cartaoSus, leito, nomePaciente, numeroConsulta, clinicaOrigem }
- *
- * A simulação abaixo imita esse comportamento até o backend estar disponível.
- */
 @Injectable({ providedIn: 'root' })
 export class AghuService {
-  private readonly baseUrl = '/api'; // prefixo do backend Laravel
+  private readonly baseUrl = '/api';
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Busca os dados do paciente no AGHU pelo número do prontuário.
-   * Retorna um Observable com os dados ou lança erro se não encontrado.
-   *
-   * Em produção: return this.http.get<DadosPaciente>(`${this.baseUrl}/pacientes/${prontuario}`);
-   */
   buscarPaciente(prontuario: string): Observable<DadosPaciente> {
-    // --- Simulação da API (substituir pela chamada HTTP real) ---
     const mockDb: Record<string, DadosPaciente> = {
       '123456': {
         prontuario: '123456',
@@ -54,19 +39,31 @@ export class AghuService {
         leito: 'Leito 110-B',
         numeroConsulta: '112233',
         clinicaOrigem: 'Pronto Atendimento'
+      },
+      '345678': {
+        prontuario: '345678',
+        nomePaciente: 'Ana Costa',
+        cartaoSus: '898 0000 1234 5678',
+        cpf: '111.222.333-44',
+        leito: 'Leito 205-B',
+        numeroConsulta: '345678',
+        clinicaOrigem: 'Ortopedia'
       }
     };
 
     return of(null).pipe(
-      delay(600), // simula latência de rede
+      delay(600),
       switchMap(() => {
         const paciente = mockDb[prontuario.trim()];
+
         if (paciente) {
           return of(paciente);
         }
-        return throwError(() => new Error('Paciente não encontrado no AGHU.'));
+
+        return throwError(
+          () => new Error('Paciente não encontrado no AGHU.')
+        );
       })
     );
-    // --- Fim da simulação ---
   }
 }
