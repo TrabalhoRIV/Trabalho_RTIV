@@ -28,7 +28,7 @@ class StoreSolicitacaoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_paciente'       => ['required', 'integer', 'exists:pacientes,id_paciente'],
+            'id_paciente'       => ['required', 'integer'], // TODO: add exists rule after migrations
             'especialidade'     => ['required', 'string', 'max:100'],
             'descricao_clinica' => ['required', 'string', 'min:20'],
         ];
