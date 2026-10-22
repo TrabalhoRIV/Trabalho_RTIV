@@ -1,0 +1,125 @@
+
+<div class="pagina">
+  <header class="cabecalho">
+    <div>
+      <h1>Avaliação de Parecer</h1>
+      <p>Fila de solicitações para triagem médica</p>
+    </div>
+    <span class="contador">{{ solicitacoesFiltradas.length }} solicitações</span>
+  </header>
+
+  <section class="filtros">
+    <label>
+      Nome do paciente
+      <input
+        type="text"
+        placeholder="Pesquisar por nome"
+        [(ngModel)]="filtroNome">
+    </label>
+
+    <label>
+      Prontuário
+      <input
+        type="text"
+        placeholder="Número do prontuário"
+        [(ngModel)]="filtroProntuario">
+    </label>
+
+    <label>
+      Clínica
+      <select [(ngModel)]="filtroClinica">
+        <option value="">Todas as clínicas</option>
+        <option *ngFor="let clinica of clinicas" [value]="clinica">
+          {{ clinica }}
+        </option>
+      </select>
+    </label>
+
+    <label>
+      Status
+      <select [(ngModel)]="filtroStatus">
+        <option value="">Todos os status</option>
+        <option value="Pendente">Pendente</option>
+        <option value="Triado">Triado</option>
+      </select>
+    </label>
+  </section>
+
+  <section class="tabela-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Prontuário</th>
+          <th>Paciente</th>
+          <th>Clínica</th>
+          <th>Data</th>
+          <th>Status</th>
+          <th>Prioridade</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let solicitacao of solicitacoesFiltradas">
+          <td>{{ solicitacao.prontuario }}</td>
+          <td>{{ solicitacao.nome }}</td>
+          <td>{{ solicitacao.clinica }}</td>
+          <td>{{ solicitacao.data }}</td>
+          <td>
+            <span class="status" [class.triado]="solicitacao.status === 'Triado'">
+              {{ solicitacao.status }}
+            </span>
+          </td>
+          <td>{{ solicitacao.prioridade || 'Não definida' }}</td>
+          <td>
+            <button class="botao-avaliar" (click)="abrirAvaliacao(solicitacao)">
+              Avaliar
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="solicitacoesFiltradas.length === 0">
+          <td colspan="7" class="vazio">
+            Nenhuma solicitação encontrada.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="fundo-modal" *ngIf="solicitacaoSelecionada">
+    <section class="modal">
+      <h2>Regular solicitação</h2>
+      <p><strong>Paciente:</strong> {{ solicitacaoSelecionada.nome }}</p>
+      <p><strong>Prontuário:</strong> {{ solicitacaoSelecionada.prontuario }}</p>
+      <p><strong>Clínica:</strong> {{ solicitacaoSelecionada.clinica }}</p>
+
+      <label>
+        Status
+        <select [(ngModel)]="statusEdicao">
+          <option value="Pendente">Pendente</option>
+          <option value="Triado">Triado</option>
+        </select>
+      </label>
+
+      <label>
+        Prioridade
+        <select [(ngModel)]="prioridadeEdicao">
+          <option value="">Selecione a prioridade</option>
+          <option value="P1">P1 - Alta</option>
+          <option value="P2">P2 - Média</option>
+          <option value="P3">P3 - Baixa</option>
+        </select>
+      </label>
+
+      <div class="acoes-modal">
+        <button class="botao-cancelar" (click)="fecharAvaliacao()">
+          Cancelar
+        </button>
+        <button class="botao-salvar" (click)="salvarAvaliacao()">
+          Salvar avaliação
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

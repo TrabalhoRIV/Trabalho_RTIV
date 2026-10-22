@@ -1,3 +1,4 @@
+
 <div class="layout">
   <header class="navbar">
     <div class="logo">
@@ -5,6 +6,16 @@
       <span>Módulo de Consultoria Ambulatorial</span>
     </div>
   </header>
+
+  <nav class="menu">
+    <a routerLink="/solicitacao" routerLinkActive="ativo">
+      Nova Solicitação
+    </a>
+    <a routerLink="/avaliacao-parecer" routerLinkActive="ativo">
+      Avaliação de Parecer
+    </a>
+  </nav>
+
   <main class="content">
     <router-outlet></router-outlet>
   </main>
