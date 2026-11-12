@@ -9,6 +9,7 @@ use App\Http\Requests\IA\PrioridadeRequest;
 use App\Http\Requests\IA\ParecerRequest;
 use App\Services\IAService;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Attributes as OA;
 
 /**
  * IAController
@@ -43,6 +44,33 @@ class IAController extends Controller
      * Requisição:  { "descricao_clinica": "Paciente com DM tipo 2..." }
      * Resposta:    { "sugestao": "Complementar com...", "tipo": "DESCRICAO_CLINICA" }
      */
+
+#[OA\Post(
+    path: "/api/ia/descricao",
+    summary: "Auxiliar na descrição clínica",
+    description: "Analisa a descrição clínica e sugere complementações. O resultado é apenas uma sugestão, exigindo revisão humana.",
+    tags: ["Inteligência Artificial"],
+    security: [["sanctum" => []]],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["descricao_clinica"],
+            properties: [
+                new OA\Property(
+                    property: "descricao_clinica",
+                    type: "string",
+                    example: "Paciente com DM tipo 2..."
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(response: 200, description: "Sugestão gerada com sucesso."),
+        new OA\Response(response: 401, description: "Usuário não autenticado."),
+        new OA\Response(response: 422, description: "Dados inválidos.")
+    ]
+)]
+
     public function descricao(DescricaoRequest $request): JsonResponse
     {
         $sugestao = $this->iaService->auxiliarDescricao(
@@ -64,6 +92,33 @@ class IAController extends Controller
      * Requisição:  { "id_solicitacao": 42 }
      * Resposta:    { "resumo": "...", "tipo": "RESUMO" }
      */
+
+#[OA\Post(
+    path: "/api/ia/resumo",
+    summary: "Gerar resumo da solicitação",
+    description: "Gera um resumo estruturado da solicitação para auxiliar o Médico Regulador.",
+    tags: ["Inteligência Artificial"],
+    security: [["sanctum" => []]],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["id_solicitacao"],
+            properties: [
+                new OA\Property(
+                    property: "id_solicitacao",
+                    type: "integer",
+                    example: 42
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(response: 200, description: "Resumo gerado com sucesso."),
+        new OA\Response(response: 401, description: "Usuário não autenticado."),
+        new OA\Response(response: 422, description: "Dados inválidos.")
+    ]
+)]
+
     public function resumo(ResumoRequest $request): JsonResponse
     {
         $resumo = $this->iaService->gerarResumo(
@@ -88,6 +143,33 @@ class IAController extends Controller
      * Requisição:  { "id_solicitacao": 42 }
      * Resposta:    { "prioridade": "P2", "justificativa": "...", "confianca": 0.87, "tipo": "PRIORIDADE" }
      */
+
+#[OA\Post(
+    path: "/api/ia/prioridade",
+    summary: "Sugerir prioridade da solicitação",
+    description: "Sugere uma classificação P1, P2, P3 ou INDETERMINADO. A decisão final é sempre do Médico Regulador.",
+    tags: ["Inteligência Artificial"],
+    security: [["sanctum" => []]],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["id_solicitacao"],
+            properties: [
+                new OA\Property(
+                    property: "id_solicitacao",
+                    type: "integer",
+                    example: 42
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(response: 200, description: "Prioridade sugerida com sucesso."),
+        new OA\Response(response: 401, description: "Usuário não autenticado."),
+        new OA\Response(response: 422, description: "Dados inválidos.")
+    ]
+)]
+
     public function prioridade(PrioridadeRequest $request): JsonResponse
     {
         $resultado = $this->iaService->sugerirPrioridade(
@@ -111,6 +193,33 @@ class IAController extends Controller
      * Requisição:  { "id_solicitacao": 42 }
      * Resposta:    { "sugestao": "...", "tipo": "PARECER" }
      */
+
+#[OA\Post(
+    path: "/api/ia/parecer",
+    summary: "Auxiliar na elaboração do parecer",
+    description: "Gera uma sugestão de texto para auxiliar o Médico Regulador. A aprovação e edição ficam sob responsabilidade humana.",
+    tags: ["Inteligência Artificial"],
+    security: [["sanctum" => []]],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["id_solicitacao"],
+            properties: [
+                new OA\Property(
+                    property: "id_solicitacao",
+                    type: "integer",
+                    example: 42
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(response: 200, description: "Sugestão de parecer gerada com sucesso."),
+        new OA\Response(response: 401, description: "Usuário não autenticado."),
+        new OA\Response(response: 422, description: "Dados inválidos.")
+    ]
+)]
+
     public function parecer(ParecerRequest $request): JsonResponse
     {
         $sugestao = $this->iaService->auxiliarParecer(

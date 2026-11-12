@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Attributes as OA;
 
 /**
  * AuthController
@@ -48,6 +49,65 @@ class AuthController extends Controller
      * Resposta (401):
      * { "message": "Credenciais inválidas." }
      */
+
+#[OA\Post(
+    path: "/api/auth/login",
+    summary: "Realizar login",
+    description: "Autentica o usuário utilizando e-mail e senha.",
+    tags: ["Autenticação"],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["email", "password"],
+            properties: [
+                new OA\Property(
+                    property: "email",
+                    type: "string",
+                    format: "email",
+                    example: "medico@hospital.gov.br"
+                ),
+                new OA\Property(
+                    property: "password",
+                    type: "string",
+                    example: "senha123"
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "Login realizado com sucesso."
+        ),
+        new OA\Response(
+            response: 401,
+            description: "Credenciais inválidas."
+        ),
+        new OA\Response(
+            response: 422,
+            description: "Dados de validação inválidos."
+        )
+    ]
+)]
+
+#[OA\Post(
+    path: "/api/auth/logout",
+    summary: "Realizar logout",
+    description: "Encerra a sessão do usuário autenticado.",
+    tags: ["Autenticação"],
+    security: [["sanctum" => []]],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "Logout realizado com sucesso."
+        ),
+        new OA\Response(
+            response: 401,
+            description: "Usuário não autenticado."
+        )
+    ]
+)]
+
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([

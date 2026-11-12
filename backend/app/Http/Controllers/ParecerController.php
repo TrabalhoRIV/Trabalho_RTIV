@@ -6,6 +6,7 @@ use App\Models\Parecer;
 use App\Models\Solicitacao;
 use App\Http\Requests\StoreParecerRequest;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Attributes as OA;
 
 /**
  * ParecerController
@@ -32,6 +33,47 @@ class ParecerController extends Controller
      *   "message": "Parecer registrado com sucesso."
      * }
      */
+
+#[OA\Post(
+    path: "/api/pareceres",
+    summary: "Registrar parecer médico",
+    description: "Registra o parecer emitido pelo Médico Regulador e atualiza o status da solicitação.",
+    tags: ["Pareceres"],
+    security: [["sanctum" => []]],
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["id_solicitacao", "texto_parecer"],
+            properties: [
+                new OA\Property(
+                    property: "id_solicitacao",
+                    type: "integer",
+                    example: 42
+                ),
+                new OA\Property(
+                    property: "texto_parecer",
+                    type: "string",
+                    example: "Paciente encaminhado para consulta especializada."
+                )
+            ]
+        )
+    ),
+    responses: [
+        new OA\Response(
+            response: 201,
+            description: "Parecer registrado com sucesso.",
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: "id", type: "integer", example: 1),
+                    new OA\Property(property: "message", type: "string", example: "Parecer registrado com sucesso.")
+                ]
+            )
+        ),
+        new OA\Response(response: 401, description: "Usuário não autenticado."),
+        new OA\Response(response: 422, description: "Dados enviados inválidos.")
+    ]
+)]
+
     public function store(StoreParecerRequest $request): JsonResponse
     {
         $parecer = Parecer::create([
